@@ -12,7 +12,7 @@
 (function () {
     "use strict";
 
-    var _enableLogs = false;
+    let _enableLogs = false;
 
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
@@ -33,7 +33,7 @@
 
     function removeFavorite() {
         const imageId = getImageId();
-        var url = new URL("/index.php", "https://gelbooru.com");
+        let url = new URL("/index.php", "https://gelbooru.com");
         url.searchParams.append("page", "favorites");
         url.searchParams.append("s", "delete");
         url.searchParams.append("id", imageId);
@@ -118,7 +118,7 @@
             );
         }
 
-        var inputIsHandled = false;
+        let inputIsHandled = false;
 
         // Check keys by location.
         switch (e.code) {
@@ -161,7 +161,7 @@
 
     // Using `onkeydown` instead of `onkeypress` so that I can detect the arrow keys.
     parent.onkeydown = function (e) {
-        var inputResult = handleInput(e);
+        let inputResult = handleInput(e);
 
         if (inputResult != false) {
             inputResult = handleInput(window.event);
