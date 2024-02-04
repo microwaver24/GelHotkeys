@@ -12,28 +12,83 @@
 (function () {
     "use strict";
 
+    var _enableLogs = true;
+
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
         return params.get("id");
     }
 
-    parent.onkeypress = function (e) {
-        //console.log(`pressed key [${e.key}]  keyCode [${e.keyCode}]`);
-        if (e.key === "b" || e.key === "0") {
-            const imageId = getImageId();
-            //console.log(`adding a favorite! imageId [${imageId}]`);
-            post_vote(imageId, "up");
-            addFav(imageId);
-            return false;
-        } else if (e.key === "B" || e.key === "1") {
-            const imageId = getImageId();
-            //console.log(`removing a favorite! imageId [${imageId}]`);
-            var url = new URL("/index.php", "https://gelbooru.com");
-            url.searchParams.append("page", "favorites");
-            url.searchParams.append("s", "delete");
-            url.searchParams.append("id", imageId);
-            parent.location.href = url; //.toString();
-            return false;
+    function addFavorite() {
+        const imageId = getImageId();
+        window.post_vote(imageId, "up");
+        window.addFav(imageId);
+
+        if (_enableLogs) {
+            console.log(`addFavorite: imageId [${imageId}]`);
         }
+    }
+
+    function removeFavorite() {
+        const imageId = getImageId();
+        var url = new URL("/index.php", "https://gelbooru.com");
+        url.searchParams.append("page", "favorites");
+        url.searchParams.append("s", "delete");
+        url.searchParams.append("id", imageId);
+        parent.location.href = url;
+
+        if (_enableLogs) {
+            console.log(`removeFavorite: imageId [${imageId}]`);
+        }
+    }
+
+    function handleInput(e) {
+        if (_enableLogs) {
+            console.log(`handleInput: code [${e.code}] key [${e.key}] keyCode [${e.keyCode}]`);
+        }
+
+        var inputIsHandled = false;
+        switch (e.code) {
+            // case "KeyB": // "B" for "bookmark".
+            case "Numpad0": // This is just close to the arrow keys, so it's convenient.
+                addFavorite();
+                inputIsHandled = true;
+                break;
+            // case "KeyN": // "N" for "no bookmark".
+            case "Numpad1": // This is just close to the arrow keys, so it's convenient.
+                removeFavorite();
+                inputIsHandled = true;
+                break;
+        }
+
+        if (!inputIsHandled) {
+            switch (e.key) {
+                case "b": // "b" for "bookmark".
+                    addFavorite();
+                    inputIsHandled = true;
+                    break;
+                case "B": // "shift + b" to do the reverse.
+                    removeFavorite();
+                    inputIsHandled = true;
+                    break;
+            }
+        }
+
+        if (inputIsHandled) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        return !inputIsHandled;
+    }
+
+    parent.onkeypress = function (e) {
+        var inputResult = handleInput(e);
+
+        if (inputResult != false) {
+            inputResult = handleInput(window.event);
+        }
+
+        return inputResult;
     };
 })();
