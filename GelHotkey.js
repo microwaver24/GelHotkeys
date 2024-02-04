@@ -2,8 +2,8 @@
 // @name         Gelbooru Hotkeys
 // @namespace    http://tampermonkey.net/
 // @version      2024-02-03
-// @description  Add some hotkeys while browsing posts on Gelbooru.
-// @author       microwaver24
+// @description  try to take over the world!
+// @author       You
 // @match        *://gelbooru.com/index.php?page=post&s=view*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gelbooru.com
 // @grant        none
@@ -54,7 +54,7 @@
 
     function toggleVideoFocus() {
         let video = document.getElementsByTagName("video")[0];
-        if ((!video) instanceof HTMLVideoElement) {
+        if (!(video instanceof HTMLVideoElement)) {
             return false;
         }
 
@@ -73,7 +73,7 @@
 
     function autoPlayVideo() {
         let video = getVideo();
-        if ((!video) instanceof HTMLVideoElement) {
+        if (!(video instanceof HTMLVideoElement)) {
             return;
         }
 
@@ -85,7 +85,7 @@
             return false;
         }
 
-        if ((!e.target) instanceof HTMLVideoElement) {
+        if (!(e.target instanceof HTMLVideoElement)) {
             return false;
         }
 
@@ -98,7 +98,7 @@
             return false;
         }
 
-        if ((!e.target) instanceof HTMLVideoElement) {
+        if (!(e.target instanceof HTMLVideoElement)) {
             return false;
         }
 
