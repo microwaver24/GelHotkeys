@@ -2,8 +2,8 @@
 // @name         Gelbooru Hotkeys
 // @namespace    http://tampermonkey.net/
 // @version      2024-02-03
-// @description  try to take over the world!
-// @author       You
+// @description  Add some hotkeys while browsing posts on Gelbooru.
+// @author       microwaver24
 // @match        *://gelbooru.com/index.php?page=post&s=view*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gelbooru.com
 // @grant        none
@@ -71,13 +71,39 @@
         return true;
     }
 
+    function toggleVideoPlay(e) {
+        // If we are focusing the video, let the video's normal handling do its thing.
+        if (e.target instanceof HTMLVideoElement) {
+            return false;
+        }
+
+        let video = document.getElementsByTagName("video")[0];
+        if (!(video instanceof HTMLVideoElement)) {
+            return false;
+        }
+
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+
+        if (_enableLogs) {
+            console.log(`toggleVideoPlay: new paused status [${video.paused}]`);
+        }
+
+        return true;
+    }
+
     function autoPlayVideo() {
         let video = getVideo();
         if (!(video instanceof HTMLVideoElement)) {
             return;
         }
 
+        // This doesn't work because of permissions.
         video.autoplay = true;
+        video.play();
     }
 
     function navigatePrev(e) {
@@ -134,6 +160,9 @@
             case "ArrowRight":
                 inputIsHandled = navigateNext(e);
                 break;
+            case "Space":
+                inputIsHandled = toggleVideoPlay(e);
+                break;
         }
 
         if (!inputIsHandled) {
@@ -171,4 +200,5 @@
     };
 
     // todo: maybe I can just set the video to start playing right away so I don't need to focus or unfocus it.
+    // autoPlayVideo();
 })();
