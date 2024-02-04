@@ -2,8 +2,8 @@
 // @name         Gelbooru Hotkeys
 // @namespace    http://tampermonkey.net/
 // @version      2024-02-03
-// @description  try to take over the world!
-// @author       You
+// @description  Add some hotkeys while browsing posts on Gelbooru.
+// @author       microwaver24
 // @match        *://gelbooru.com/index.php?page=post&s=view*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gelbooru.com
 // @grant        none
