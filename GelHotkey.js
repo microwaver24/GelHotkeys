@@ -12,7 +12,7 @@
 (function () {
     "use strict";
 
-    var _enableLogs = true;
+    var _enableLogs = false;
 
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
@@ -27,6 +27,8 @@
         if (_enableLogs) {
             console.log(`addFavorite: imageId [${imageId}]`);
         }
+
+        return true;
     }
 
     function removeFavorite() {
@@ -40,36 +42,111 @@
         if (_enableLogs) {
             console.log(`removeFavorite: imageId [${imageId}]`);
         }
+
+        return true;
+    }
+
+    function getVideo() {
+        return window.document.querySelector("#gelcomVideoPlayer");
+        // This might be safer in the long run if they change the query selector or something.
+        // return document.getElementsByTagName("video")[0];
+    }
+
+    function toggleVideoFocus() {
+        let video = document.getElementsByTagName("video")[0];
+        if ((!video) instanceof HTMLVideoElement) {
+            return false;
+        }
+
+        if (window.document.activeElement === video) {
+            video.blur();
+        } else {
+            video.focus({ preventScroll: false });
+        }
+
+        if (_enableLogs) {
+            console.log(`toggleVideoFocus: new activeElement [${window.document.activeElement}]`);
+        }
+
+        return true;
+    }
+
+    function autoPlayVideo() {
+        let video = getVideo();
+        if ((!video) instanceof HTMLVideoElement) {
+            return;
+        }
+
+        video.autoplay = true;
+    }
+
+    function navigatePrev(e) {
+        if (!e.shiftKey) {
+            return false;
+        }
+
+        if ((!e.target) instanceof HTMLVideoElement) {
+            return false;
+        }
+
+        window.navigatePrev();
+        return true;
+    }
+
+    function navigateNext(e) {
+        if (!e.shiftKey) {
+            return false;
+        }
+
+        if ((!e.target) instanceof HTMLVideoElement) {
+            return false;
+        }
+
+        window.navigateNext();
+        return true;
     }
 
     function handleInput(e) {
         if (_enableLogs) {
-            console.log(`handleInput: code [${e.code}] key [${e.key}] keyCode [${e.keyCode}]`);
+            console.log(
+                `handleInput:` +
+                    ` code [${e.code}]` +
+                    ` key [${e.key}]` +
+                    ` keyCode [${e.keyCode}]` +
+                    ` shiftKey [${e.shiftKey}]` +
+                    ` target [${e.target}] [${typeof e.target}]`,
+            );
         }
 
         var inputIsHandled = false;
+
+        // Check keys by location.
         switch (e.code) {
-            // case "KeyB": // "B" for "bookmark".
             case "Numpad0": // This is just close to the arrow keys, so it's convenient.
-                addFavorite();
-                inputIsHandled = true;
+                inputIsHandled = addFavorite();
                 break;
-            // case "KeyN": // "N" for "no bookmark".
             case "Numpad1": // This is just close to the arrow keys, so it's convenient.
-                removeFavorite();
-                inputIsHandled = true;
+                inputIsHandled = removeFavorite();
+                break;
+            case "ArrowLeft":
+                inputIsHandled = navigatePrev(e);
+                break;
+            case "ArrowRight":
+                inputIsHandled = navigateNext(e);
                 break;
         }
 
         if (!inputIsHandled) {
+            // Check keys by name.
             switch (e.key) {
                 case "b": // "b" for "bookmark".
-                    addFavorite();
-                    inputIsHandled = true;
+                    inputIsHandled = addFavorite();
                     break;
                 case "B": // "shift + b" to do the reverse.
-                    removeFavorite();
-                    inputIsHandled = true;
+                    inputIsHandled = removeFavorite();
+                    break;
+                case "v": // "v" for "video".
+                    inputIsHandled = toggleVideoFocus();
                     break;
             }
         }
@@ -79,10 +156,11 @@
             e.stopPropagation();
         }
 
-        return !inputIsHandled;
+        return inputIsHandled != true;
     }
 
-    parent.onkeypress = function (e) {
+    // Using `onkeydown` instead of `onkeypress` so that I can detect the arrow keys.
+    parent.onkeydown = function (e) {
         var inputResult = handleInput(e);
 
         if (inputResult != false) {
@@ -91,4 +169,6 @@
 
         return inputResult;
     };
+
+    // todo: maybe I can just set the video to start playing right away so I don't need to focus or unfocus it.
 })();
