@@ -28,6 +28,14 @@
         return params.get("id");
     }
 
+    function getVideo() {
+        // This way seems like it might be more accurate if there are multiple videos in the page for some reason.
+        // return window.document.querySelector("#gelcomVideoPlayer");
+
+        // This might be safer in the long run if they change the query selector of the video or something.
+        return document.getElementsByTagName("video")[0];
+    }
+
     function addFavorite(event, handler) {
         const imageId = getImageId();
         window.post_vote(imageId, "up");
@@ -53,14 +61,6 @@
         }
 
         return true;
-    }
-
-    function getVideo() {
-        // This way seems like it might be more accurate if there are multiple videos in the page for some reason.
-        // return window.document.querySelector("#gelcomVideoPlayer");
-
-        // This might be safer in the long run if they change the query selector of the video or something.
-        return document.getElementsByTagName("video")[0];
     }
 
     function toggleVideoFocus(event, handler) {
@@ -106,17 +106,6 @@
         return true;
     }
 
-    function autoPlayVideo() {
-        let video = getVideo();
-        if (!(video instanceof HTMLVideoElement)) {
-            return;
-        }
-
-        // This doesn't work because of permissions.
-        video.autoplay = true;
-        video.play();
-    }
-
     function navigatePrev(event, handler) {
         if (!(event.target instanceof HTMLVideoElement)) {
             return false;
@@ -133,6 +122,17 @@
 
         window.navigateNext();
         return true;
+    }
+
+    function autoPlayVideo() {
+        let video = getVideo();
+        if (!(video instanceof HTMLVideoElement)) {
+            return;
+        }
+
+        // This doesn't work because of permissions.
+        video.autoplay = true;
+        video.play();
     }
 
     // todo: maybe I can just set the video to start playing right away so I don't need to focus or unfocus it.
