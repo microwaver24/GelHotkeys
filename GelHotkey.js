@@ -16,12 +16,12 @@
     let _enableLogs = true;
 
     // Bind hotkeys to actions.
-    hotkeys("b,num_0", addFavorite);
-    hotkeys("shift+b,num_1", removeFavorite);
-    hotkeys("v,num_4", toggleVideoFocus);
-    hotkeys("space,num_5", toggleVideoPlay);
-    hotkeys("shift+left", navigatePrev);
-    hotkeys("shift+right", navigateNext);
+    window.hotkeys("b,num_0", addFavorite);
+    window.hotkeys("shift+b,num_1", removeFavorite);
+    window.hotkeys("v,num_4", toggleVideoFocus);
+    window.hotkeys("space,num_5", toggleVideoPlay);
+    window.hotkeys("shift+left", navigatePrev);
+    window.hotkeys("shift+right", navigateNext);
 
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
