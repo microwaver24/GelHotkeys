@@ -140,9 +140,12 @@
                 `handleInput:` +
                     ` code [${e.code}]` +
                     ` key [${e.key}]` +
-                    ` keyCode [${e.keyCode}]` +
+                    ` keyCode (deprecated) [${e.keyCode}]` +
+                    ` altKey [${e.altKey}]` +
+                    ` ctrlKey [${e.ctrlKey}]` +
+                    ` metaKey [${e.metaKey}]` +
                     ` shiftKey [${e.shiftKey}]` +
-                    ` target [${e.target}] [${typeof e.target}]`,
+                    ` target [${e.target}]`,
             );
         }
 
