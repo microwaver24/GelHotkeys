@@ -8,18 +8,19 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gelbooru.com
 // @grant        none
 // @require      https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
+// @comment      Input handling code from here: https://github.com/jaywcjlove/hotkeys-js
 // ==/UserScript==
 
 (function () {
     "use strict";
 
-    let _enableLogs = true;
+    let _enableLogs = false;
 
     // Bind hotkeys to actions.
-    window.hotkeys("b,num_0", addFavorite);
-    window.hotkeys("shift+b,num_1", removeFavorite);
-    window.hotkeys("v,num_4", toggleVideoFocus);
-    window.hotkeys("space,num_5", toggleVideoPlay);
+    window.hotkeys("b,num_0", addFavorite); // "b" for "bookmark"
+    window.hotkeys("shift+b,num_decimal", removeFavorite);
+    window.hotkeys("v,num_2", toggleVideoFocus); // "v" for "video"
+    window.hotkeys("space,num_1", toggleVideoPlay);
     window.hotkeys("shift+left", navigatePrev);
     window.hotkeys("shift+right", navigateNext);
 
