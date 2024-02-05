@@ -10,44 +10,18 @@
 // @require      https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
 // ==/UserScript==
 
-// Hotkeys:
-// Favorite post: "b" or numpad 0
-// Unfavorite post: "B" or numpad 1
-// Focus/unfocus video: "v"
-// Play/pause video (without focusing it): space
-// Previous post (while focusing video): shift + arrow left or shift + numpad 4 with numlock off
-// Next post (while focusing video): shift + arrow right or shift + numpad 6 with numlock off
-
-// import hotkeys from "hotkeys-js";
-
 (function () {
     "use strict";
 
     let _enableLogs = true;
 
-    hotkeys("b,num_0", function (event, handler) {
-        addFavorite(event, handler);
-    });
-
-    hotkeys("shift+b,num_1", function (event, handler) {
-        removeFavorite(event, handler);
-    });
-
-    hotkeys("v,num_4", function (event, handler) {
-        toggleVideoFocus(event, handler);
-    });
-
-    hotkeys("space,num_5", function (event, handler) {
-        toggleVideoPlay(event, handler);
-    });
-
-    hotkeys("shift+left", function (event, handler) {
-        navigatePrev(event, handler);
-    });
-
-    hotkeys("shift+right", function (event, handler) {
-        navigateNext(event, handler);
-    });
+    // Bind hotkeys to actions.
+    hotkeys("b,num_0", addFavorite);
+    hotkeys("shift+b,num_1", removeFavorite);
+    hotkeys("v,num_4", toggleVideoFocus);
+    hotkeys("space,num_5", toggleVideoPlay);
+    hotkeys("shift+left", navigatePrev);
+    hotkeys("shift+right", navigateNext);
 
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
