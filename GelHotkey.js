@@ -192,6 +192,12 @@
 
     // Using `onkeydown` instead of `onkeypress` so that I can detect the arrow keys.
     parent.onkeydown = function (e) {
+        // If you type in a text box, disable all input handling.
+        // You'll have to click something besides the text box to get the hotkeys back.
+        if (e.target instanceof HTMLInputElement) {
+            return;
+        }
+
         let inputResult = handleInput(e);
 
         if (inputResult != false) {
