@@ -202,7 +202,7 @@
             e.stopPropagation();
         }
 
-        return inputIsHandled != true;
+        return inputIsHandled !== true;
     }
 
     // Using `onkeydown` instead of `onkeypress` so that I can detect the arrow keys.
@@ -215,7 +215,7 @@
 
         let inputResult = handleInput(e);
 
-        if (inputResult != false) {
+        if (inputResult !== false) {
             inputResult = handleInput(window.event);
         }
 
