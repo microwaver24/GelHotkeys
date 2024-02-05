@@ -37,6 +37,16 @@
         return document.getElementsByTagName("video")[0];
     }
 
+    function logObjProps(obj) {
+        for (var property in obj) {
+            console.log(`${property}: ${obj[property]}`);
+        }
+    }
+
+    function logHotkeysHandler(handler) {
+        // logObjProps(handler);
+    }
+
     function addFavorite(event, handler) {
         const imageId = getImageId();
         window.post_vote(imageId, "up");
@@ -44,6 +54,7 @@
 
         if (_enableLogs) {
             console.log(`addFavorite: imageId [${imageId}]`);
+            logHotkeysHandler(handler);
         }
 
         return false;
@@ -59,6 +70,7 @@
 
         if (_enableLogs) {
             console.log(`removeFavorite: imageId [${imageId}]`);
+            logHotkeysHandler(handler);
         }
 
         return false;
@@ -78,6 +90,7 @@
 
         if (_enableLogs) {
             console.log(`toggleVideoFocus: new activeElement [${window.document.activeElement}]`);
+            logHotkeysHandler(handler);
         }
 
         return false;
@@ -114,6 +127,7 @@
 
         if (_enableLogs) {
             console.log(`toggleVideoPlay: new paused status [${video.paused}]`);
+            logHotkeysHandler(handler);
         }
 
         return false;
@@ -125,6 +139,12 @@
         }
 
         window.navigatePrev();
+
+        if (_enableLogs) {
+            console.log(`navigatePrev`);
+            logHotkeysHandler(handler);
+        }
+
         return false;
     }
 
@@ -134,6 +154,12 @@
         }
 
         window.navigateNext();
+
+        if (_enableLogs) {
+            console.log(`navigateNext`);
+            logHotkeysHandler(handler);
+        }
+
         return false;
     }
 
