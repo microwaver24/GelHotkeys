@@ -150,11 +150,19 @@
 
         // Check keys by location.
         switch (e.code) {
-            case "Numpad0": // This is just close to the arrow keys, so it's convenient.
-                inputIsHandled = addFavorite();
+            // Acccept only the numpad and not the number keys since it's conveniently close to the arrow keys.
+            case "Numpad0":
+                // Make sure numlock is on.
+                if (e.key === "0") {
+                    inputIsHandled = addFavorite();
+                }
                 break;
-            case "Numpad1": // This is just close to the arrow keys, so it's convenient.
-                inputIsHandled = removeFavorite();
+            // Acccept only the numpad and not the number keys since it's conveniently close to the arrow keys.
+            case "Numpad1":
+                // Make sure numlock is on.
+                if (e.key === "1") {
+                    inputIsHandled = removeFavorite();
+                }
                 break;
             case "Space":
                 inputIsHandled = toggleVideoPlay(e);
