@@ -11,18 +11,50 @@
 // @comment      Input handling code from here: https://github.com/jaywcjlove/hotkeys-js
 // ==/UserScript==
 
+// Ideas for more features:
+// Editable hotkeys
+// Blacklist tag shortcut, maybe alt+click a tag?
+
 (function () {
     "use strict";
 
     let _enableLogs = false;
 
+    // Input Binding -----------------------------------------------------------
+
     // Bind hotkeys to actions.
-    window.hotkeys("b,num_0", addFavorite); // "b" for "bookmark"
-    window.hotkeys("shift+b,num_decimal", removeFavorite);
-    window.hotkeys("v,num_2", toggleVideoFocus); // "v" for "video"
-    window.hotkeys("space,num_1", toggleVideoPlay);
-    window.hotkeys("shift+left", navigatePrev);
-    window.hotkeys("shift+right", navigateNext);
+    window.hotkeys("num_0,b", addFavorite); // "b" for "bookmark"
+
+    window.hotkeys("num_decimal,shift+b", removeFavorite);
+
+    window.hotkeys("num_2,v", toggleVideoFocus); // "v" for "video"
+
+    window.hotkeys("num_1", toggleVideoPlay);
+    window.hotkeys("space", function (event, handler) {
+        if (event.target instanceof HTMLVideoElement) {
+            // If the video is focused, let it handle the space bar input itself.
+            return true;
+        }
+        return toggleVideoPlay(event, handler);
+    });
+
+    window.hotkeys("num_4", navigatePrev);
+    window.hotkeys("shift+left", function (event, handler) {
+        if (!(event.target instanceof HTMLVideoElement)) {
+            return true;
+        }
+        return navigatePrev(event, handler);
+    });
+
+    window.hotkeys("num_6", navigateNext);
+    window.hotkeys("shift+right", function (event, handler) {
+        if (!(event.target instanceof HTMLVideoElement)) {
+            return true;
+        }
+        return navigateNext(event, handler);
+    });
+
+    // Helpers -----------------------------------------------------------------
 
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
@@ -38,6 +70,10 @@
     }
 
     function logObjProps(obj) {
+        if (!_enableLogs) {
+            return;
+        }
+
         for (var property in obj) {
             console.log(`${property}: ${obj[property]}`);
         }
@@ -46,6 +82,8 @@
     function logHotkeysHandler(handler) {
         // logObjProps(handler);
     }
+
+    // Actions -----------------------------------------------------------------
 
     function addFavorite(event, handler) {
         const imageId = getImageId();
@@ -99,24 +137,13 @@
     function toggleVideoPlay(event, handler) {
         let video;
 
-        if (_enableLogs) {
-            console.log(`toggleVideoPlay: begin`);
-            logHotkeysHandler(handler);
-        }
-
         if (event.target instanceof HTMLVideoElement) {
-            // If the video is focused, let it handle the space bar input itself.
-            if (event.code === "Space") {
-                return true;
-            }
-
             video = event.target;
         } else {
             video = getVideo();
-        }
-
-        if (!(video instanceof HTMLVideoElement)) {
-            return true;
+            if (!(video instanceof HTMLVideoElement)) {
+                return true;
+            }
         }
 
         if (video.paused) {
@@ -134,10 +161,6 @@
     }
 
     function navigatePrev(event, handler) {
-        if (!(event.target instanceof HTMLVideoElement)) {
-            return true;
-        }
-
         window.navigatePrev();
 
         if (_enableLogs) {
@@ -149,10 +172,6 @@
     }
 
     function navigateNext(event, handler) {
-        if (!(event.target instanceof HTMLVideoElement)) {
-            return true;
-        }
-
         window.navigateNext();
 
         if (_enableLogs) {
