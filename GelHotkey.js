@@ -45,7 +45,7 @@
             console.log(`addFavorite: imageId [${imageId}]`);
         }
 
-        return true;
+        return false;
     }
 
     function removeFavorite(event, handler) {
@@ -60,13 +60,13 @@
             console.log(`removeFavorite: imageId [${imageId}]`);
         }
 
-        return true;
+        return false;
     }
 
     function toggleVideoFocus(event, handler) {
         let video = getVideo();
         if (!(video instanceof HTMLVideoElement)) {
-            return false;
+            return true;
         }
 
         if (window.document.activeElement === video) {
@@ -79,18 +79,30 @@
             console.log(`toggleVideoFocus: new activeElement [${window.document.activeElement}]`);
         }
 
-        return true;
+        return false;
     }
 
     function toggleVideoPlay(event, handler) {
-        // If we are focusing the video, let the video's normal handling do its thing.
-        if (event.target instanceof HTMLVideoElement) {
-            return false;
+        let video;
+
+        if (_enableLogs) {
+            console.log(`toggleVideoPlay: begin`);
+            logHotkeysHandler(handler);
         }
 
-        let video = getVideo();
+        if (event.target instanceof HTMLVideoElement) {
+            // If the video is focused, let it handle the space bar input itself.
+            if (event.code === "Space") {
+                return true;
+            }
+
+            video = event.target;
+        } else {
+            video = getVideo();
+        }
+
         if (!(video instanceof HTMLVideoElement)) {
-            return false;
+            return true;
         }
 
         if (video.paused) {
@@ -103,25 +115,25 @@
             console.log(`toggleVideoPlay: new paused status [${video.paused}]`);
         }
 
-        return true;
+        return false;
     }
 
     function navigatePrev(event, handler) {
         if (!(event.target instanceof HTMLVideoElement)) {
-            return false;
+            return true;
         }
 
         window.navigatePrev();
-        return true;
+        return false;
     }
 
     function navigateNext(event, handler) {
         if (!(event.target instanceof HTMLVideoElement)) {
-            return false;
+            return true;
         }
 
         window.navigateNext();
-        return true;
+        return false;
     }
 
     function autoPlayVideo() {
