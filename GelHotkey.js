@@ -117,10 +117,6 @@
     }
 
     function navigatePrev(e) {
-        if (!e.shiftKey) {
-            return false;
-        }
-
         if (!(e.target instanceof HTMLVideoElement)) {
             return false;
         }
@@ -130,10 +126,6 @@
     }
 
     function navigateNext(e) {
-        if (!e.shiftKey) {
-            return false;
-        }
-
         if (!(e.target instanceof HTMLVideoElement)) {
             return false;
         }
@@ -164,12 +156,6 @@
             case "Numpad1": // This is just close to the arrow keys, so it's convenient.
                 inputIsHandled = removeFavorite();
                 break;
-            case "ArrowLeft":
-                inputIsHandled = navigatePrev(e);
-                break;
-            case "ArrowRight":
-                inputIsHandled = navigateNext(e);
-                break;
             case "Space":
                 inputIsHandled = toggleVideoPlay(e);
                 break;
@@ -186,6 +172,19 @@
                     break;
                 case "v": // "v" for "video".
                     inputIsHandled = toggleVideoFocus();
+                    break;
+
+                // Arow keys are handled by `key` instead of `code` so that you can use the numpad with numlock off,
+                // since that works in the existing Gelbooru hotkeys.
+                case "ArrowLeft":
+                    if (e.shiftKey) {
+                        inputIsHandled = navigatePrev(e);
+                    }
+                    break;
+                case "ArrowRight":
+                    if (e.shiftKey) {
+                        inputIsHandled = navigateNext(e);
+                    }
                     break;
             }
         }
