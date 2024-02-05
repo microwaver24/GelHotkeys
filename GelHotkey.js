@@ -47,13 +47,15 @@
     }
 
     function getVideo() {
-        return window.document.querySelector("#gelcomVideoPlayer");
-        // This might be safer in the long run if they change the query selector or something.
-        // return document.getElementsByTagName("video")[0];
+        // This way seems like it might be more accurate if there are multiple videos in the page for some reason.
+        // return window.document.querySelector("#gelcomVideoPlayer");
+
+        // This might be safer in the long run if they change the query selector of the video or something.
+        return document.getElementsByTagName("video")[0];
     }
 
     function toggleVideoFocus() {
-        let video = document.getElementsByTagName("video")[0];
+        let video = getVideo();
         if (!(video instanceof HTMLVideoElement)) {
             return false;
         }
@@ -77,7 +79,7 @@
             return false;
         }
 
-        let video = document.getElementsByTagName("video")[0];
+        let video = getVideo();
         if (!(video instanceof HTMLVideoElement)) {
             return false;
         }
