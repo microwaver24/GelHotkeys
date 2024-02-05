@@ -9,6 +9,14 @@
 // @grant        none
 // ==/UserScript==
 
+// Hotkeys:
+// Favorite post: "b" or numpad 0
+// Unfavorite post: "B" or numpad 1
+// Focus/unfocus video: "v"
+// Play/pause video (without focusing it): space
+// Previous post (while focusing video): shift + arrow left or shift + numpad 4 with numlock off
+// Next post (while focusing video): shift + arrow right or shift + numpad 6 with numlock off
+
 (function () {
     "use strict";
 
