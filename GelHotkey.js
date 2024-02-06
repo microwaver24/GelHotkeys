@@ -54,6 +54,9 @@
         return navigateNext(event, handler);
     });
 
+    window.hotkeys("num_7", historyBack);
+    window.hotkeys("num_9", historyForward);
+
     // Helpers -----------------------------------------------------------------
 
     function getImageId() {
@@ -195,4 +198,14 @@
 
     // todo: maybe I can just set the video to start playing right away so I don't need to focus or unfocus it.
     // autoPlayVideo();
+
+    function historyBack(event, handler) {
+        history.back();
+        return false;
+    }
+
+    function historyForward(event, handler) {
+        history.forward();
+        return false;
+    }
 })();
