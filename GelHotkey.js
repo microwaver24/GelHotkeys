@@ -19,6 +19,7 @@
 // Fit image to window.
 // Center image in window.
 // Auto-play video posts on page load.
+// Enter/exit fullscreen for videos.
 
 (function () {
     "use strict";
@@ -181,34 +182,60 @@
     }
 
     function toggleFitImageToWindow(event, handler) {
+        let didLoadHigherResImage = maybeLoadHigherResImage();
+
+        if (!didLoadHigherResImage) {
+            toggleFitImageToWindowInner();
+        }
+
+        return false;
+    }
+
+    function toggleFitImageToWindowInner() {
+        let image = window.$("#image");
+        let imageElement = image[0];
+
+        window.$("#resize-link").toggle();
+        image.toggleClass("fit-width");
+        scrollToImage();
+
+        log(`toggleFitImageToWindowInner`);
+    }
+
+    // This function handles if the Gelbooru option "Always Show Original" is turned off.
+    // In that case, we need to load the full size image the first time instead of toggling.
+    function maybeLoadHigherResImage() {
         let image = window.$("#image");
         let imageElement = image[0];
         let fullSizeImageSource = window.document.querySelector("meta[property='og:image']").getAttribute("content");
         let currentImageSource = image.attr("src");
-        let isFirstClick = currentImageSource !== fullSizeImageSource;
+        let isShowingLowResVersion = currentImageSource !== fullSizeImageSource;
 
-        if (isFirstClick) {
+        if (isShowingLowResVersion) {
             image.css("filter", "blur(8px)");
             image.attr("src", fullSizeImageSource);
             image.removeAttr("height width");
             window.$("#imgsrcset").attr("srcset", fullSizeImageSource);
+
             image.on("load", function () {
                 image.css("animation", "sharpen 0.5s forwards");
+                scrollToImage();
             });
         }
 
-        let hasClassFitWidth = image.hasClass("fit-width");
-        let shouldToggleFitImageToWindow = !isFirstClick || !hasClassFitWidth;
-        if (shouldToggleFitImageToWindow) {
-            window.$("#resize-link").toggle();
-            image.toggleClass("fit-width");
-        }
+        log(
+            `maybeLoadHigherResImage: fullSizeImageSource [${fullSizeImageSource}]` +
+                ` isShowingLowResVersion [${isShowingLowResVersion}]`,
+        );
+
+        return isShowingLowResVersion;
+    }
+
+    function scrollToImage() {
+        let image = window.$("#image");
+        let imageElement = image[0];
 
         imageElement.scrollIntoView(true);
-
-        log(`toggleFitImageToWindow: fullSizeImageSource [${fullSizeImageSource}] isFirstClick [${isFirstClick}]`);
-
-        return false;
     }
 
     function toggleVideoFocus(event, handler) {
@@ -359,5 +386,5 @@
     setHotkeysScope();
 
     updateFitWidthStyle();
-    // toggleFitImageToWindow(null, null);
+    scrollToImage();
 })();
