@@ -18,9 +18,6 @@
 // A hotkey for "Click here to expand image." and also to undo that.
 // Fit image to window.
 // Center image in window.
-// Refresh page to get a new set of recommended images. Maybe there's a way to get another set without refreshing.
-// When you unfavorite, does it vote down?
-// Next and prev page of post search results.
 // Auto-play video posts on page load.
 
 (function () {
@@ -36,6 +33,14 @@
 
     // Bind hotkeys to actions.
     // Input handling code from here: https://github.com/jaywcjlove/hotkeys-js
+
+    {
+        let scope = SCOPE_ALL;
+
+        window.hotkeys("num_7", scope, historyBack);
+        window.hotkeys("num_9", scope, historyForward);
+        window.hotkeys("num_8", scope, reloadPage);
+    }
 
     {
         let scope = SCOPE_POST_VIEW;
@@ -61,14 +66,6 @@
 
         window.hotkeys("num_4,left", scope, navigateListPrev);
         window.hotkeys("num_6,right", scope, navigateListNext);
-    }
-
-    {
-        let scope = SCOPE_ALL;
-
-        window.hotkeys("num_7", scope, historyBack);
-        window.hotkeys("num_9", scope, historyForward);
-        window.hotkeys("num_8", scope, reloadPage);
     }
 
     // Helpers -----------------------------------------------------------------
@@ -167,6 +164,9 @@
         url.searchParams.append("page", "favorites");
         url.searchParams.append("s", "delete");
         url.searchParams.append("id", imageId);
+
+        // Seems like there is no way to remove your vote on the image.
+        // window.post_vote(imageId, "down");
         parent.location.href = url;
 
         log(`removeFavorite: imageId [${imageId}]`);
