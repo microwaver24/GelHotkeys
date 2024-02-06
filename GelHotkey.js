@@ -13,7 +13,15 @@
 
 // Ideas for more features:
 // Editable hotkeys
-// Blacklist tag shortcut, maybe alt+click a tag?
+// Blacklist/unblacklist tag shortcut, maybe alt+click a tag?
+// Hotkeys to go to the suggested posts (there are 6 of them),
+// The next and previous hotkeys can use the suggested posts if there is no next or prev, like when going directly to an image.
+// A hotkey for "Click here to expand image." and also to undo that.
+// Fit image to window.
+// Center image in window.
+// Refresh page to get a new set of recommended images. Maybe there's a way to get another set without refreshing.
+// When you unfavorite, does it vote down?
+// Next and prev page of post search results.
 
 (function () {
     "use strict";
