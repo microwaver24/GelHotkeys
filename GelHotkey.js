@@ -30,29 +30,14 @@
     window.hotkeys("num_2,v", toggleVideoFocus); // "v" for "video"
 
     window.hotkeys("num_1", toggleVideoPlay);
-    window.hotkeys("space", function (event, handler) {
-        if (event.target instanceof HTMLVideoElement) {
-            // If the video is focused, let it handle the space bar input itself.
-            return true;
-        }
-        return toggleVideoPlay(event, handler);
-    });
+    // If the video is focused, let it handle the space bar input itself.
+    window.hotkeys("space", validateAction.bind(null, toggleVideoPlay, isNotTargetingVideo));
 
     window.hotkeys("num_4", navigatePrev);
-    window.hotkeys("shift+left", function (event, handler) {
-        if (!(event.target instanceof HTMLVideoElement)) {
-            return true;
-        }
-        return navigatePrev(event, handler);
-    });
+    window.hotkeys("shift+left", validateAction.bind(null, navigatePrev, isTargetingVideo));
 
     window.hotkeys("num_6", navigateNext);
-    window.hotkeys("shift+right", function (event, handler) {
-        if (!(event.target instanceof HTMLVideoElement)) {
-            return true;
-        }
-        return navigateNext(event, handler);
-    });
+    window.hotkeys("shift+right", validateAction.bind(null, navigateNext, isTargetingVideo));
 
     window.hotkeys("num_7", historyBack);
     window.hotkeys("num_9", historyForward);
@@ -92,6 +77,24 @@
 
     function logHotkeysHandler(handler) {
         // logObjProps(handler);
+    }
+
+    // Wrap `actionFunction` so that it only fires if `isOkCallback` validates that it should fire.
+    function validateAction(actionFunction, isOkCallback, event, handler) {
+        if (!isOkCallback(event, handler)) {
+            return true;
+        }
+        return actionFunction(event, handler);
+    }
+
+    // A validation function for `validateAction`.
+    function isTargetingVideo(event, handler) {
+        return event.target instanceof HTMLVideoElement;
+    }
+
+    // A validation function for `validateAction`.
+    function isNotTargetingVideo(event, handler) {
+        return !isTargetingVideo(event, handler);
     }
 
     // Actions -----------------------------------------------------------------
