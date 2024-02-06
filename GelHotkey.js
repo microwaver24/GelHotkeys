@@ -72,13 +72,21 @@
         return document.getElementsByTagName("video")[0];
     }
 
+    function log(...args) {
+        if (!_enableLogs) {
+            return;
+        }
+
+        console.log(...args);
+    }
+
     function logObjProps(obj) {
         if (!_enableLogs) {
             return;
         }
 
         for (var property in obj) {
-            console.log(`${property}: ${obj[property]}`);
+            log(`${property}: ${obj[property]}`);
         }
     }
 
@@ -93,10 +101,8 @@
         window.post_vote(imageId, "up");
         window.addFav(imageId);
 
-        if (_enableLogs) {
-            console.log(`addFavorite: imageId [${imageId}]`);
-            logHotkeysHandler(handler);
-        }
+        log(`addFavorite: imageId [${imageId}]`);
+        logHotkeysHandler(handler);
 
         return false;
     }
@@ -109,10 +115,8 @@
         url.searchParams.append("id", imageId);
         parent.location.href = url;
 
-        if (_enableLogs) {
-            console.log(`removeFavorite: imageId [${imageId}]`);
-            logHotkeysHandler(handler);
-        }
+        log(`removeFavorite: imageId [${imageId}]`);
+        logHotkeysHandler(handler);
 
         return false;
     }
@@ -129,10 +133,8 @@
             video.focus({ preventScroll: false });
         }
 
-        if (_enableLogs) {
-            console.log(`toggleVideoFocus: new activeElement [${window.document.activeElement}]`);
-            logHotkeysHandler(handler);
-        }
+        log(`toggleVideoFocus: new activeElement [${window.document.activeElement}]`);
+        logHotkeysHandler(handler);
 
         return false;
     }
@@ -155,10 +157,8 @@
             video.pause();
         }
 
-        if (_enableLogs) {
-            console.log(`toggleVideoPlay: new paused status [${video.paused}]`);
-            logHotkeysHandler(handler);
-        }
+        log(`toggleVideoPlay: new paused status [${video.paused}]`);
+        logHotkeysHandler(handler);
 
         return false;
     }
@@ -166,10 +166,8 @@
     function navigatePrev(event, handler) {
         window.navigatePrev();
 
-        if (_enableLogs) {
-            console.log(`navigatePrev`);
-            logHotkeysHandler(handler);
-        }
+        log(`navigatePrev`);
+        logHotkeysHandler(handler);
 
         return false;
     }
@@ -177,10 +175,8 @@
     function navigateNext(event, handler) {
         window.navigateNext();
 
-        if (_enableLogs) {
-            console.log(`navigateNext`);
-            logHotkeysHandler(handler);
-        }
+        log(`navigateNext`);
+        logHotkeysHandler(handler);
 
         return false;
     }
