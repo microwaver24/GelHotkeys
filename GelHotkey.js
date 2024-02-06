@@ -50,6 +50,8 @@
         window.hotkeys("num_decimal,shift+b", scope, removeFavorite);
 
         window.hotkeys("num_1,v", scope, toggleVideoFocus); // "v" for "video"
+        // There should never be an image and a video in the same post, so I am reusing the hotkey.
+        window.hotkeys("num_1", scope, toggleFitImageToWindow);
 
         window.hotkeys("num_5", scope, toggleVideoPlay);
         window.hotkeys("space", scope, wrapAction(toggleVideoPlay, isNotTargetingVideo));
@@ -80,7 +82,7 @@
         // return window.document.querySelector("#gelcomVideoPlayer");
 
         // This might be safer in the long run if they change the query selector of the video or something.
-        return document.getElementsByTagName("video")[0];
+        return window.document.getElementsByTagName("video")[0];
     }
 
     function setHotkeysScope() {
@@ -99,6 +101,8 @@
         }
 
         window.hotkeys.setScope(SCOPE_ALL);
+
+        // log(`setHotkeysScope: scope [${window.hotkeys.getScope()}]`);
     }
 
     function log(...args) {
@@ -114,7 +118,7 @@
             return;
         }
 
-        for (var property in obj) {
+        for (let property in obj) {
             log(`${property}: ${obj[property]}`);
         }
     }
@@ -167,10 +171,42 @@
 
         // Seems like there is no way to remove your vote on the image.
         // window.post_vote(imageId, "down");
+
         parent.location.href = url;
 
         log(`removeFavorite: imageId [${imageId}]`);
         logHotkeysHandler(handler);
+
+        return false;
+    }
+
+    function toggleFitImageToWindow(event, handler) {
+        let image = window.$("#image");
+        let imageElement = image[0];
+        let fullSizeImageSource = window.document.querySelector("meta[property='og:image']").getAttribute("content");
+        let currentImageSource = image.attr("src");
+        let isFirstClick = currentImageSource !== fullSizeImageSource;
+
+        if (isFirstClick) {
+            image.css("filter", "blur(8px)");
+            image.attr("src", fullSizeImageSource);
+            image.removeAttr("height width");
+            window.$("#imgsrcset").attr("srcset", fullSizeImageSource);
+            image.on("load", function () {
+                image.css("animation", "sharpen 0.5s forwards");
+            });
+        }
+
+        let hasClassFitWidth = image.hasClass("fit-width");
+        let shouldToggleFitImageToWindow = !isFirstClick || !hasClassFitWidth;
+        if (shouldToggleFitImageToWindow) {
+            window.$("#resize-link").toggle();
+            image.toggleClass("fit-width");
+        }
+
+        imageElement.scrollIntoView(true);
+
+        log(`toggleFitImageToWindow: fullSizeImageSource [${fullSizeImageSource}] isFirstClick [${isFirstClick}]`);
 
         return false;
     }
@@ -296,6 +332,32 @@
         return navigateListByDelta(POSTS_PER_PAGE, event, handler);
     }
 
+    function getFitWidthStyle() {
+        for (let j = 0; j < document.styleSheets.length; ++j) {
+            let stylesheet = document.styleSheets[j];
+            for (let i = 0; i < stylesheet.cssRules.length; i++) {
+                if (stylesheet.cssRules[i].selectorText === ".fit-width") {
+                    return stylesheet.cssRules[i];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // Changes the css style called ".fit-width" so it actually causes the image to be fit inside the window.
+    function updateFitWidthStyle() {
+        let elementRules = getFitWidthStyle();
+
+        if (elementRules instanceof CSSStyleRule) {
+            elementRules.style.removeProperty("height");
+            elementRules.style.setProperty("max-height", "100vh");
+            elementRules.style.setProperty("object-fit", "contain");
+        }
+    }
+
     setHotkeysScope();
-    // log(`hotkeys scope [${window.hotkeys.getScope()}]`);
+
+    updateFitWidthStyle();
+    // toggleFitImageToWindow(null, null);
 })();
