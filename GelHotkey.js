@@ -4,7 +4,7 @@
 // @version      2024-02-03
 // @description  Add some hotkeys while browsing posts on Gelbooru.
 // @author       microwaver24
-// @match        *://gelbooru.com/index.php?page=post&s=view*
+// @match        *://gelbooru.com/index.php*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gelbooru.com
 // @grant        none
 // @require      https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
@@ -25,34 +25,44 @@
 (function () {
     "use strict";
 
-    let _enableLogs = false;
+    const ENABLE_LOGS = true;
+    const SCOPE_ALL = "all";
+    const SCOPE_POST_VIEW = "postView";
+    const SCOPE_POST_LIST = "postList";
 
     // Input Binding -----------------------------------------------------------
 
     // Bind hotkeys to actions.
     // Input handling code from here: https://github.com/jaywcjlove/hotkeys-js
 
-    window.hotkeys("num_0,b", addFavorite); // "b" for "bookmark"
+    {
+        let scope = SCOPE_POST_VIEW;
 
-    window.hotkeys("num_decimal,shift+b", removeFavorite);
+        window.hotkeys("num_0,b", scope, addFavorite); // "b" for "bookmark"
 
-    window.hotkeys("num_1,v", toggleVideoFocus); // "v" for "video"
+        window.hotkeys("num_decimal,shift+b", scope, removeFavorite);
 
-    window.hotkeys("num_5", toggleVideoPlay);
-    // If the video is focused, let it handle the space bar input itself.
-    window.hotkeys("space", wrapAction(toggleVideoPlay, isNotTargetingVideo));
+        window.hotkeys("num_1,v", scope, toggleVideoFocus); // "v" for "video"
 
-    window.hotkeys("num_4", navigatePrev);
-    window.hotkeys("shift+left", wrapAction(navigatePrev, isTargetingVideo));
+        window.hotkeys("num_5", scope, toggleVideoPlay);
+        window.hotkeys("space", scope, wrapAction(toggleVideoPlay, isNotTargetingVideo));
 
-    window.hotkeys("num_6", navigateNext);
-    window.hotkeys("shift+right", wrapAction(navigateNext, isTargetingVideo));
+        window.hotkeys("num_4", scope, navigatePrev);
+        window.hotkeys("shift+left", scope, wrapAction(navigatePrev, isTargetingVideo));
 
-    window.hotkeys("num_7", historyBack);
+        window.hotkeys("num_6", scope, navigateNext);
+        window.hotkeys("shift+right", scope, wrapAction(navigateNext, isTargetingVideo));
+    }
 
     window.hotkeys("num_9", historyForward);
 
-    window.hotkeys("num_8", reloadPage);
+    {
+        let scope = SCOPE_ALL;
+
+        window.hotkeys("num_7", scope, historyBack);
+        window.hotkeys("num_9", scope, historyForward);
+        window.hotkeys("num_8", scope, reloadPage);
+    }
 
     // Helpers -----------------------------------------------------------------
 
@@ -69,8 +79,26 @@
         return document.getElementsByTagName("video")[0];
     }
 
+    function setHotkeysScope() {
+        const params = new URLSearchParams(window.location.search);
+        let page = params.get("page");
+        let s = params.get("s");
+
+        if (page === "post" && s == "view") {
+            window.hotkeys.setScope(SCOPE_POST_VIEW);
+            return;
+        }
+
+        if (page === "post" && s == "list") {
+            window.hotkeys.setScope(SCOPE_POST_LIST);
+            return;
+        }
+
+        window.hotkeys.setScope(SCOPE_ALL);
+    }
+
     function log(...args) {
-        if (!_enableLogs) {
+        if (!ENABLE_LOGS) {
             return;
         }
 
@@ -78,7 +106,7 @@
     }
 
     function logObjProps(obj) {
-        if (!_enableLogs) {
+        if (!ENABLE_LOGS) {
             return;
         }
 
