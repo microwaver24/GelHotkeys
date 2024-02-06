@@ -297,6 +297,5 @@
     }
 
     setHotkeysScope();
-
-    log(`hotkeys scope [${window.hotkeys.getScope()}]`);
+    // log(`hotkeys scope [${window.hotkeys.getScope()}]`);
 })();
