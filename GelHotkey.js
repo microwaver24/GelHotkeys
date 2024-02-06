@@ -40,13 +40,13 @@
 
     window.hotkeys("num_5", toggleVideoPlay);
     // If the video is focused, let it handle the space bar input itself.
-    window.hotkeys("space", validateAction.bind(null, toggleVideoPlay, isNotTargetingVideo));
+    window.hotkeys("space", wrapAction(toggleVideoPlay, isNotTargetingVideo));
 
     window.hotkeys("num_4", navigatePrev);
-    window.hotkeys("shift+left", validateAction.bind(null, navigatePrev, isTargetingVideo));
+    window.hotkeys("shift+left", wrapAction(navigatePrev, isTargetingVideo));
 
     window.hotkeys("num_6", navigateNext);
-    window.hotkeys("shift+right", validateAction.bind(null, navigateNext, isTargetingVideo));
+    window.hotkeys("shift+right", wrapAction(navigateNext, isTargetingVideo));
 
     window.hotkeys("num_7", historyBack);
 
@@ -89,6 +89,10 @@
 
     function logHotkeysHandler(handler) {
         // logObjProps(handler);
+    }
+
+    function wrapAction(actionFunction, isOkCallback) {
+        return validateAction.bind(null, actionFunction, isOkCallback);
     }
 
     // Wrap `actionFunction` so that it only fires if `isOkCallback` validates that it should fire.
