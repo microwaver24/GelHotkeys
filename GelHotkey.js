@@ -8,7 +8,6 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gelbooru.com
 // @grant        none
 // @require      https://unpkg.com/hotkeys-js/dist/hotkeys.min.js
-// @comment      Input handling code from here: https://github.com/jaywcjlove/hotkeys-js
 // ==/UserScript==
 
 // Ideas for more features:
@@ -31,6 +30,8 @@
     // Input Binding -----------------------------------------------------------
 
     // Bind hotkeys to actions.
+    // Input handling code from here: https://github.com/jaywcjlove/hotkeys-js
+
     window.hotkeys("num_0,b", addFavorite); // "b" for "bookmark"
 
     window.hotkeys("num_decimal,shift+b", removeFavorite);
