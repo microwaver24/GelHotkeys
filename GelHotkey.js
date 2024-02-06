@@ -27,9 +27,9 @@
 
     window.hotkeys("num_decimal,shift+b", removeFavorite);
 
-    window.hotkeys("num_2,v", toggleVideoFocus); // "v" for "video"
+    window.hotkeys("num_1,v", toggleVideoFocus); // "v" for "video"
 
-    window.hotkeys("num_1", toggleVideoPlay);
+    window.hotkeys("num_5", toggleVideoPlay);
     // If the video is focused, let it handle the space bar input itself.
     window.hotkeys("space", validateAction.bind(null, toggleVideoPlay, isNotTargetingVideo));
 
@@ -40,6 +40,7 @@
     window.hotkeys("shift+right", validateAction.bind(null, navigateNext, isTargetingVideo));
 
     window.hotkeys("num_7", historyBack);
+
     window.hotkeys("num_9", historyForward);
 
     // Helpers -----------------------------------------------------------------
