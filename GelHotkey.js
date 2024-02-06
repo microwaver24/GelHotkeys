@@ -21,14 +21,16 @@
 // Refresh page to get a new set of recommended images. Maybe there's a way to get another set without refreshing.
 // When you unfavorite, does it vote down?
 // Next and prev page of post search results.
+// Auto-play video posts on page load.
 
 (function () {
     "use strict";
 
-    const ENABLE_LOGS = true;
+    const ENABLE_LOGS = false;
     const SCOPE_ALL = "all";
     const SCOPE_POST_VIEW = "postView";
     const SCOPE_POST_LIST = "postList";
+    const POSTS_PER_PAGE = 42;
 
     // Input Binding -----------------------------------------------------------
 
@@ -54,7 +56,12 @@
         window.hotkeys("shift+right", scope, wrapAction(navigateNext, isTargetingVideo));
     }
 
-    window.hotkeys("num_9", historyForward);
+    {
+        let scope = SCOPE_POST_LIST;
+
+        window.hotkeys("num_4,left", scope, navigateListPrev);
+        window.hotkeys("num_6,right", scope, navigateListNext);
+    }
 
     {
         let scope = SCOPE_ALL;
@@ -239,9 +246,6 @@
         video.play();
     }
 
-    // todo: maybe I can just set the video to start playing right away so I don't need to focus or unfocus it.
-    // autoPlayVideo();
-
     function historyBack(event, handler) {
         history.back();
         return false;
@@ -256,4 +260,43 @@
         parent.location.reload();
         return false;
     }
+
+    function navigateListByDelta(delta, event, handler) {
+        let params = new URLSearchParams(window.location.search);
+
+        let pid = parseInt(params.get("pid"));
+        if (isNaN(pid)) {
+            pid = 0;
+        }
+        pid = Math.max(0, pid + delta);
+        params.set("pid", pid);
+
+        if ("?" + params.toString() === parent.location.search.toString()) {
+            // Nothing changed.
+            return true;
+        }
+
+        parent.location.search = params;
+
+        if (ENABLE_LOGS) {
+            let dir = delta < 0 ? "prev" : "next";
+            let pageNumber = 1 + Math.floor(pid / POSTS_PER_PAGE);
+            log(`navigateListByDelta: dir [${dir}] pageNumber [${pageNumber}] pid [${pid}]`);
+            logHotkeysHandler(handler);
+        }
+
+        return true;
+    }
+
+    function navigateListPrev(event, handler) {
+        return navigateListByDelta(-POSTS_PER_PAGE, event, handler);
+    }
+
+    function navigateListNext(event, handler) {
+        return navigateListByDelta(POSTS_PER_PAGE, event, handler);
+    }
+
+    setHotkeysScope();
+
+    log(`hotkeys scope [${window.hotkeys.getScope()}]`);
 })();
