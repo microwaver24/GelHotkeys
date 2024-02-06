@@ -51,6 +51,8 @@
 
     window.hotkeys("num_9", historyForward);
 
+    window.hotkeys("num_8", reloadPage);
+
     // Helpers -----------------------------------------------------------------
 
     function getImageId() {
@@ -214,6 +216,11 @@
 
     function historyForward(event, handler) {
         history.forward();
+        return false;
+    }
+
+    function reloadPage(event, handler) {
+        parent.location.reload();
         return false;
     }
 })();
