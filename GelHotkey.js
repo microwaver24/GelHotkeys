@@ -372,6 +372,19 @@
         return null;
     }
 
+    function getImageContainerStyle() {
+        for (let j = 0; j < document.styleSheets.length; ++j) {
+            let stylesheet = document.styleSheets[j];
+            for (let i = 0; i < stylesheet.cssRules.length; i++) {
+                if (stylesheet.cssRules[i].selectorText === ".note-container") {
+                    return stylesheet.cssRules[i];
+                }
+            }
+        }
+
+        return null;
+    }
+
     // Changes the css style called ".fit-width" so it actually causes the image to be fit inside the window.
     function updateFitWidthStyle() {
         let elementRules = getFitWidthStyle();
@@ -380,11 +393,21 @@
             elementRules.style.removeProperty("height");
             elementRules.style.setProperty("max-height", "100vh");
             elementRules.style.setProperty("object-fit", "contain");
+            elementRules.style.setProperty("width", "100%");
+        }
+    }
+
+    // Changes the css style called ".note-container" To center the image in the window.
+    function updateImageContainerStyle() {
+        var elementRules = getImageContainerStyle();
+        if (elementRules instanceof CSSStyleRule) {
+            elementRules.style.setProperty("width", "100%");
         }
     }
 
     setHotkeysScope();
 
     updateFitWidthStyle();
+    updateImageContainerStyle();
     scrollToImage();
 })();
