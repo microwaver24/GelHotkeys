@@ -20,6 +20,7 @@
 // Center image in window.
 // Auto-play video posts on page load.
 // Enter/exit fullscreen for videos.
+// If you view a post, then go back to search results, arrow keys should navigate the grid of posts starting with the one you just came back from.
 
 (function () {
     "use strict";
@@ -76,6 +77,10 @@
     function getImageId() {
         const params = new URLSearchParams(window.location.search);
         return params.get("id");
+    }
+
+    function getImage() {
+        return window.$("#image");
     }
 
     function getVideo() {
@@ -192,12 +197,12 @@
     }
 
     function toggleFitImageToWindowInner() {
-        let image = window.$("#image");
+        let image = getImage();
         let imageElement = image[0];
 
         window.$("#resize-link").toggle();
         image.toggleClass("fit-width");
-        scrollToImage();
+        scrollToImageOrVideo();
 
         log(`toggleFitImageToWindowInner`);
     }
@@ -205,7 +210,7 @@
     // This function handles if the Gelbooru option "Always Show Original" is turned off.
     // In that case, we need to load the full size image the first time instead of toggling.
     function maybeLoadHigherResImage() {
-        let image = window.$("#image");
+        let image = getImage();
         let imageElement = image[0];
         let fullSizeImageSource = window.document.querySelector("meta[property='og:image']").getAttribute("content");
         let currentImageSource = image.attr("src");
@@ -219,7 +224,7 @@
 
             image.on("load", function () {
                 image.css("animation", "sharpen 0.5s forwards");
-                scrollToImage();
+                scrollToImageOrVideo();
             });
         }
 
@@ -231,11 +236,18 @@
         return isShowingLowResVersion;
     }
 
-    function scrollToImage() {
-        let image = window.$("#image");
-        let imageElement = image[0];
+    function scrollToImageOrVideo() {
+        let image = getImage()[0];
+        if (image instanceof HTMLImageElement) {
+            image.scrollIntoView(true);
+            return;
+        }
 
-        imageElement.scrollIntoView(true);
+        let video = getVideo();
+        if (video instanceof HTMLVideoElement) {
+            video.scrollIntoView(true);
+            return;
+        }
     }
 
     function toggleVideoFocus(event, handler) {
@@ -409,5 +421,5 @@
 
     updateFitWidthStyle();
     updateImageContainerStyle();
-    scrollToImage();
+    scrollToImageOrVideo();
 })();
